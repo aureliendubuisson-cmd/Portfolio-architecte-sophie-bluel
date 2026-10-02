@@ -28,7 +28,10 @@ function displayCategories(categories, works) {
     const tous = document.createElement('button');
     tous.textContent = "Tous";
     filters.appendChild(tous);
-    tous.addEventListener('click', () => displayWorks(works));
+    tous.addEventListener('click', () => {document.querySelector('.filters button.active').classList.remove('active');
+        displayWorks(works)
+        tous.classList.add("active")});
+    tous.classList.add("active")
 
     for (const category of categories) {
         const filter = document.createElement("button");
@@ -36,6 +39,8 @@ function displayCategories(categories, works) {
         filters.appendChild(filter);
         filter.addEventListener('click', () => {
             const filteredWorks = works.filter(work => work.categoryId === category.id);
+            document.querySelector('.filters button.active').classList.remove('active');
+        filter.classList.add('active');
             displayWorks(filteredWorks);
         });
     }
