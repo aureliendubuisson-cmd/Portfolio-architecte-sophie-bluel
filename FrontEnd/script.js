@@ -9,10 +9,19 @@ function displayWorks(works) {
     const gallery = document.querySelector(".gallery");
     gallery.innerHTML = "";
     for (const work of works) {
+        const figure = document.createElement("figure");
+
         const img = document.createElement("img")
         img.src = work.imageUrl;
-        gallery.appendChild(img);
-        console.log(work.title);
+
+        const figcaption = document.createElement("figcaption");
+        figcaption.textContent = work.title;
+
+        figure.appendChild(img);
+        figure.appendChild(figcaption);
+
+        gallery.appendChild(figure);
+
     }
 }
 
@@ -45,6 +54,24 @@ function displayCategories(categories, works) {
         });
     }
 }
+
+function displayAdminMode() {
+    const token = localStorage.getItem("token");
+
+    if (token) {
+        document.querySelectorAll(".admin").forEach(element => {
+            element.classList.add("active");
+        });
+        document.querySelector(".login").classList.add("hidden");
+    }
+}
+
+displayAdminMode();
+
+document.querySelector(".logout").addEventListener("click", () => {
+    localStorage.removeItem("token");
+    window.location.href = "index.html";
+});
 
 async function init() {
     const works = await getWorks();

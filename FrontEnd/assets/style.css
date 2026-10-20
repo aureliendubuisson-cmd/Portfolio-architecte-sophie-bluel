@@ -160,8 +160,8 @@ li:hover {
 
 .gallery img {
 	width: 100%;
-
 }
+
 #contact {
 	width: 50%;
 margin: auto;
@@ -211,3 +211,23 @@ footer nav ul {
 	margin: 2em
 }
 
+.error{
+	display: none;
+}
+
+.error.active{
+	display: block;
+	color: red;
+}
+
+.admin{
+	display: none;
+}
+
+.admin.active{
+	display: block;
+}
+
+.hidden{
+	display: none;
+}
