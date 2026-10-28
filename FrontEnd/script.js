@@ -25,6 +25,37 @@ function displayWorks(works) {
     }
 }
 
+function displayModalWorks(works) {
+    const gallery = document.querySelector(".modal-gallery");
+    gallery.innerHTML = "";
+    for (const work of works) {
+        const figure = document.createElement("figure");
+
+        const img = document.createElement("img")
+        img.src = work.imageUrl;
+
+        const button = document.createElement("button");
+        button.textContent = "X";
+        button.setAttribute("aria-label", "Supprimer");
+        button.addEventListener("click", async() => {
+            const token = localStorage.getItem("token");
+
+            const response = await fetch(`http://localhost:5678/api/works/${work.id}`, {
+                method: "DELETE",
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            });
+            console.log(response.status);
+            }
+        )
+
+        figure.appendChild(img);
+        figure.appendChild(button);
+        gallery.appendChild(figure);
+    }
+
+}
 
 async function getCategories() {
     const response = await fetch("http://localhost:5678/api/categories");
@@ -84,6 +115,7 @@ document.querySelector(".modal-close").addEventListener("click", () => {
 async function init() {
     const works = await getWorks();
     displayWorks(works);
+    displayModalWorks(works);
     const categories = await getCategories();
     displayCategories(categories, works);
 }
