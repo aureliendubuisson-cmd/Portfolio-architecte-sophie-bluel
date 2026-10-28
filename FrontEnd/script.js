@@ -73,6 +73,14 @@ document.querySelector(".logout").addEventListener("click", () => {
     window.location.href = "index.html";
 });
 
+document.querySelector(".modifier").addEventListener("click", () => {
+    document.querySelector(".modal").classList.add("active");
+});
+
+document.querySelector(".modal-close").addEventListener("click", () => {
+    document.querySelector(".modal").classList.remove("active");
+});
+
 async function init() {
     const works = await getWorks();
     displayWorks(works);
