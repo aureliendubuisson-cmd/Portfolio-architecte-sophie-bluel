@@ -37,24 +37,35 @@ function displayModalWorks(works) {
         const button = document.createElement("button");
         button.textContent = "X";
         button.setAttribute("aria-label", "Supprimer");
-        button.addEventListener("click", async() => {
-            const token = localStorage.getItem("token");
+        button.addEventListener("click", async () => {
+            const isDeleted = await deleteWork(work.id);
+            if (isDeleted) {
+                figure.remove();
 
-            const response = await fetch(`http://localhost:5678/api/works/${work.id}`, {
-                method: "DELETE",
-                headers: {
-                    Authorization: `Bearer ${token}`
-                }
-            });
-            console.log(response.status);
+                const position = works.indexOf(work);
+                works.splice(position, 1);
+                displayWorks(works);
             }
-        )
+        });
 
         figure.appendChild(img);
         figure.appendChild(button);
         gallery.appendChild(figure);
     }
 
+}
+
+async function deleteWork(workId) {
+    const token = localStorage.getItem("token");
+
+    const response = await fetch(`http://localhost:5678/api/works/${workId}`, {
+        method: "DELETE",
+        headers: {
+            Authorization: `Bearer ${token}`
+        }
+    });
+
+    return response.ok;
 }
 
 async function getCategories() {
