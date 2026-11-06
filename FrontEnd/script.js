@@ -97,6 +97,16 @@ function displayCategories(categories, works) {
     }
 }
 
+function displayCategoryOptions(categories) {
+    const select = document.querySelector("#category");
+    for (const category of categories) {
+        const option = document.createElement("option");
+        option.value = category.id;
+        option.textContent = category.name;
+        select.appendChild(option);
+    }
+}
+
 function displayAdminMode() {
     const token = localStorage.getItem("token");
 
@@ -117,10 +127,27 @@ document.querySelector(".logout").addEventListener("click", () => {
 
 document.querySelector(".modifier").addEventListener("click", () => {
     document.querySelector(".modal").classList.add("active");
+    document.querySelector(".modal-view-gallery").classList.remove("hidden");
+    document.querySelector(".modal-view-add").classList.add("hidden");
 });
 
 document.querySelector(".modal-close").addEventListener("click", () => {
     document.querySelector(".modal").classList.remove("active");
+});
+
+document.querySelector(".modal-add-btn").addEventListener("click", () => {
+    document.querySelector(".modal-view-gallery").classList.add("hidden");
+    document.querySelector(".modal-view-add").classList.remove("hidden");
+});
+
+document.querySelector(".modal-back").addEventListener("click", () => {
+    document.querySelector(".modal-view-gallery").classList.remove("hidden");
+    document.querySelector(".modal-view-add").classList.add("hidden");
+});
+
+document.querySelector(".modal-form").addEventListener("submit", async (event) => {
+    event.preventDefault();
+    console.log("envoi");
 });
 
 async function init() {
@@ -129,6 +156,7 @@ async function init() {
     displayModalWorks(works);
     const categories = await getCategories();
     displayCategories(categories, works);
+    displayCategoryOptions(categories);
 }
 
 init();
