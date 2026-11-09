@@ -97,6 +97,16 @@ function displayCategories(categories, works) {
     }
 }
 
+function displayCategoryOptions(categories) {
+    const select = document.querySelector("#category");
+    for (const category of categories) {
+        const option = document.createElement("option");
+        option.value = category.id;
+        option.textContent = category.name;
+        select.appendChild(option);
+    }
+}
+
 function displayAdminMode() {
     const token = localStorage.getItem("token");
 
@@ -117,11 +127,65 @@ document.querySelector(".logout").addEventListener("click", () => {
 
 document.querySelector(".modifier").addEventListener("click", () => {
     document.querySelector(".modal").classList.add("active");
+    document.querySelector(".modal-view-gallery").classList.remove("hidden");
+    document.querySelector(".modal-view-add").classList.add("hidden");
 });
 
 document.querySelector(".modal-close").addEventListener("click", () => {
     document.querySelector(".modal").classList.remove("active");
 });
+
+document.querySelector(".modal-add-btn").addEventListener("click", () => {
+    document.querySelector(".modal-view-gallery").classList.add("hidden");
+    document.querySelector(".modal-view-add").classList.remove("hidden");
+});
+
+document.querySelector(".modal-back").addEventListener("click", () => {
+    document.querySelector(".modal-view-gallery").classList.remove("hidden");
+    document.querySelector(".modal-view-add").classList.add("hidden");
+});
+
+async function addWork(formData) {
+    const token = localStorage.getItem("token");
+
+    const response = await fetch("http://localhost:5678/api/works", {
+        method: "POST",
+        headers: {
+            Authorization: `Bearer ${token}`
+        },
+        body: formData
+    });
+
+    if (!response.ok) {
+        return null;
+    }
+    return await response.json();
+}
+
+function initialisationAddPhotoForm(works) {
+    const form = document.querySelector(".modal-form");
+    const error = form.querySelector(".error");
+
+    form.addEventListener("submit", async (event) => {
+        event.preventDefault();
+        error.classList.remove("active");
+
+        const newWork = await addWork(new FormData(form));
+        if (!newWork) {
+            error.classList.add("active");
+            return;
+        }
+
+        newWork.categoryId = Number(newWork.categoryId);
+        works.push(newWork);
+        displayWorks(works);
+        displayModalWorks(works);
+
+        form.reset();
+        document.querySelector(".modal-view-gallery").classList.remove("hidden");
+        document.querySelector(".modal-view-add").classList.add("hidden");
+    });
+}
 
 async function init() {
     const works = await getWorks();
@@ -129,6 +193,8 @@ async function init() {
     displayModalWorks(works);
     const categories = await getCategories();
     displayCategories(categories, works);
+    displayCategoryOptions(categories);
+    initialisationAddPhotoForm(works);
 }
 
 init();
