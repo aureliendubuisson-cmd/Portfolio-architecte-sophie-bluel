@@ -89,15 +89,17 @@
 			<button class="modal-back" aria-label="Retour">←</button>
 			<h2>Ajout photo</h2>
 			<form class="modal-form">
-				<input type="file" id="open-file" name="image" accept="image/png, image/jpeg">
+				<input type="file" id="open-file" name="image" accept="image/png, image/jpeg" required>
 
 				<label for="title">Titre</label>
-				<input type="text" id="title" name="title">
+				<input type="text" id="title" name="title" required>
 
 				<label for="category">Catégorie</label>
-				<select id="category" name="category">
+				<select id="category" name="category" required>
 					<option value=""></option>
 				</select>
+
+				<p class="error">Impossible d'ajouter le projet</p>
 
 				<hr class="modal-separator">
 

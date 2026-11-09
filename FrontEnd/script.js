@@ -145,10 +145,47 @@ document.querySelector(".modal-back").addEventListener("click", () => {
     document.querySelector(".modal-view-add").classList.add("hidden");
 });
 
-document.querySelector(".modal-form").addEventListener("submit", async (event) => {
-    event.preventDefault();
-    console.log("envoi");
-});
+async function addWork(formData) {
+    const token = localStorage.getItem("token");
+
+    const response = await fetch("http://localhost:5678/api/works", {
+        method: "POST",
+        headers: {
+            Authorization: `Bearer ${token}`
+        },
+        body: formData
+    });
+
+    if (!response.ok) {
+        return null;
+    }
+    return await response.json();
+}
+
+function initialisationAddPhotoForm(works) {
+    const form = document.querySelector(".modal-form");
+    const error = form.querySelector(".error");
+
+    form.addEventListener("submit", async (event) => {
+        event.preventDefault();
+        error.classList.remove("active");
+
+        const newWork = await addWork(new FormData(form));
+        if (!newWork) {
+            error.classList.add("active");
+            return;
+        }
+
+        newWork.categoryId = Number(newWork.categoryId);
+        works.push(newWork);
+        displayWorks(works);
+        displayModalWorks(works);
+
+        form.reset();
+        document.querySelector(".modal-view-gallery").classList.remove("hidden");
+        document.querySelector(".modal-view-add").classList.add("hidden");
+    });
+}
 
 async function init() {
     const works = await getWorks();
@@ -157,6 +194,7 @@ async function init() {
     const categories = await getCategories();
     displayCategories(categories, works);
     displayCategoryOptions(categories);
+    initialisationAddPhotoForm(works);
 }
 
 init();
