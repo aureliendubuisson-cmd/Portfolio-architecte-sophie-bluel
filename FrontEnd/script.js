@@ -4,7 +4,6 @@ async function getWorks() {
     return works;
 }
 
-
 function displayWorks(works) {
     const gallery = document.querySelector(".gallery");
     gallery.innerHTML = "";
@@ -23,6 +22,90 @@ function displayWorks(works) {
         gallery.appendChild(figure);
 
     }
+}
+
+
+async function getCategories() {
+    const response = await fetch("http://localhost:5678/api/categories");
+    const categories = await response.json();
+    return categories;
+}
+
+function displayCategories(categories, works) {
+    const filters = document.querySelector(".filters");
+    const tous = document.createElement('button');
+    tous.textContent = "Tous";
+    filters.appendChild(tous);
+    tous.addEventListener('click', () => {document.querySelector('.filters button.active').classList.remove('active');
+        displayWorks(works)
+        tous.classList.add("active")});
+    tous.classList.add("active")
+
+    for (const category of categories) {
+        const filter = document.createElement("button");
+        filter.textContent = category.name;
+        filters.appendChild(filter);
+        filter.addEventListener('click', () => {
+            const filteredWorks = works.filter(work => work.categoryId === category.id);
+            document.querySelector('.filters button.active').classList.remove('active');
+        filter.classList.add('active');
+            displayWorks(filteredWorks);
+        });
+    }
+}
+
+
+function displayAdminMode() {
+    const token = localStorage.getItem("token");
+
+    if (token) {
+        document.querySelectorAll(".admin").forEach(element => {
+            element.classList.add("active");
+        });
+        document.querySelector(".login").classList.add("hidden");
+    }
+}
+
+displayAdminMode();
+
+document.querySelector(".logout").addEventListener("click", () => {
+    localStorage.removeItem("token");
+    window.location.href = "index.html";
+});
+
+
+document.querySelector(".modifier").addEventListener("click", () => {
+    document.querySelector(".modal").classList.add("active");
+    document.querySelector(".modal-view-gallery").classList.remove("hidden");
+    document.querySelector(".modal-view-add").classList.add("hidden");
+});
+
+document.querySelector(".modal-close").addEventListener("click", () => {
+    document.querySelector(".modal").classList.remove("active");
+});
+
+document.querySelector(".modal-add-btn").addEventListener("click", () => {
+    document.querySelector(".modal-view-gallery").classList.add("hidden");
+    document.querySelector(".modal-view-add").classList.remove("hidden");
+});
+
+document.querySelector(".modal-back").addEventListener("click", () => {
+    document.querySelector(".modal-view-gallery").classList.remove("hidden");
+    document.querySelector(".modal-view-add").classList.add("hidden");
+});
+
+
+async function deleteWork(workId) {
+    const token = localStorage.getItem("token");
+
+    const response = await fetch(`http://localhost:5678/api/works/${workId}`, {
+        method: "DELETE",
+        headers: {
+            Authorization: `Bearer ${token}`
+        }
+    });
+
+    return response.ok;
 }
 
 function displayModalWorks(works) {
@@ -55,95 +138,6 @@ function displayModalWorks(works) {
 
 }
 
-async function deleteWork(workId) {
-    const token = localStorage.getItem("token");
-
-    const response = await fetch(`http://localhost:5678/api/works/${workId}`, {
-        method: "DELETE",
-        headers: {
-            Authorization: `Bearer ${token}`
-        }
-    });
-
-    return response.ok;
-}
-
-async function getCategories() {
-    const response = await fetch("http://localhost:5678/api/categories");
-    const categories = await response.json();
-    return categories;
-}
-
-function displayCategories(categories, works) {
-    const filters = document.querySelector(".filters");
-    const tous = document.createElement('button');
-    tous.textContent = "Tous";
-    filters.appendChild(tous);
-    tous.addEventListener('click', () => {document.querySelector('.filters button.active').classList.remove('active');
-        displayWorks(works)
-        tous.classList.add("active")});
-    tous.classList.add("active")
-
-    for (const category of categories) {
-        const filter = document.createElement("button");
-        filter.textContent = category.name;
-        filters.appendChild(filter);
-        filter.addEventListener('click', () => {
-            const filteredWorks = works.filter(work => work.categoryId === category.id);
-            document.querySelector('.filters button.active').classList.remove('active');
-        filter.classList.add('active');
-            displayWorks(filteredWorks);
-        });
-    }
-}
-
-function displayCategoryOptions(categories) {
-    const select = document.querySelector("#category");
-    for (const category of categories) {
-        const option = document.createElement("option");
-        option.value = category.id;
-        option.textContent = category.name;
-        select.appendChild(option);
-    }
-}
-
-function displayAdminMode() {
-    const token = localStorage.getItem("token");
-
-    if (token) {
-        document.querySelectorAll(".admin").forEach(element => {
-            element.classList.add("active");
-        });
-        document.querySelector(".login").classList.add("hidden");
-    }
-}
-
-displayAdminMode();
-
-document.querySelector(".logout").addEventListener("click", () => {
-    localStorage.removeItem("token");
-    window.location.href = "index.html";
-});
-
-document.querySelector(".modifier").addEventListener("click", () => {
-    document.querySelector(".modal").classList.add("active");
-    document.querySelector(".modal-view-gallery").classList.remove("hidden");
-    document.querySelector(".modal-view-add").classList.add("hidden");
-});
-
-document.querySelector(".modal-close").addEventListener("click", () => {
-    document.querySelector(".modal").classList.remove("active");
-});
-
-document.querySelector(".modal-add-btn").addEventListener("click", () => {
-    document.querySelector(".modal-view-gallery").classList.add("hidden");
-    document.querySelector(".modal-view-add").classList.remove("hidden");
-});
-
-document.querySelector(".modal-back").addEventListener("click", () => {
-    document.querySelector(".modal-view-gallery").classList.remove("hidden");
-    document.querySelector(".modal-view-add").classList.add("hidden");
-});
 
 async function addWork(formData) {
     const token = localStorage.getItem("token");
@@ -160,6 +154,16 @@ async function addWork(formData) {
         return null;
     }
     return await response.json();
+}
+
+function displayCategoryOptions(categories) {
+    const select = document.querySelector("#category");
+    for (const category of categories) {
+        const option = document.createElement("option");
+        option.value = category.id;
+        option.textContent = category.name;
+        select.appendChild(option);
+    }
 }
 
 function initialisationAddPhotoForm(works) {
@@ -186,6 +190,7 @@ function initialisationAddPhotoForm(works) {
         document.querySelector(".modal-view-add").classList.add("hidden");
     });
 }
+
 
 async function init() {
     const works = await getWorks();
