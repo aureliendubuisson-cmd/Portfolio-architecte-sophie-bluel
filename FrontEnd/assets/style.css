@@ -52,6 +52,7 @@ body {
 	margin:auto;
 	font-family: 'Work Sans' ;
 	font-size: 14px;
+	background-color: #FFFEF8;
 }
 header {
 	display: flex;
@@ -97,6 +98,15 @@ nav li {
 
 li:hover {
 	color: #B1663C;
+}
+
+nav a {
+	color: inherit;
+	text-decoration: none;
+}
+
+nav li.current {
+	font-weight: 600;
 }
 .filters {
 	display: flex;
@@ -148,7 +158,22 @@ li:hover {
 }
 #portfolio h2 {
 	text-align: center;
+}
+
+.projets {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	gap: 30px;
 	margin-bottom: 1em;
+}
+
+body:has(.bandeau.active) .filters {
+	display: none;
+}
+
+body:has(.bandeau.active) .gallery {
+	margin-top: 80px;
 }
 .gallery {
 	width: 100%;
@@ -250,25 +275,45 @@ footer nav ul {
 }
 
 .modal-window{
+	position: relative;
 	width: 630px;
 	background-color: rgb(255 255 255);
-	padding: 9px 25px;
+	padding: 60px 25px 0;
+	border-radius: 10px;
 }
 
 .modal-window h2{
 	text-align: center;
+	font-family: 'Work Sans', sans-serif;
+	font-weight: 400;
+	font-size: 26px;
+	color: #000000;
 }
 
-.modal-close{
-	display: block;
-	margin-left: auto;
+.modal-close,
+.modal-back {
+	position: absolute;
+	top: 25px;
+	border: none;
+	background: none;
+	font-size: 20px;
+	cursor: pointer;
+}
+
+.modal-close {
+	right: 30px;
+}
+
+.modal-back {
+	left: 30px;
 }
 
 .modal-gallery {
 	display: grid;
 	grid-template-columns: repeat(5, 1fr);
 	gap: 10px;
-	margin: 30px 0;
+	width: 420px;
+	margin: 45px auto 0;
 }
 
 .modal-gallery figure {
@@ -282,9 +327,24 @@ footer nav ul {
 
 .modal-gallery button {
 	position: absolute;
-	top: 5px;
+	top: 6px;
 	right: 5px;
+	width: 17px;
+	height: 17px;
+	padding: 0;
+	border: none;
+	border-radius: 2px;
+	background-color: #000000;
+	color: #FFFFFF;
+	font-size: 0;
 	cursor: pointer;
+}
+
+.modal-gallery button::before {
+	content: "\f2ed";
+	font-family: "Font Awesome 6 Free";
+	font-weight: 900;
+	font-size: 9px;
 }
 
 .modal-separator {
@@ -316,4 +376,160 @@ footer nav ul {
 
 .modal-add-btn {
 	margin-bottom: 35px;
+}
+
+.bandeau {
+	position: absolute;
+	top: 0;
+	left: 0;
+	right: 0;
+	height: 59px;
+	line-height: 59px;
+	background-color: #000000;
+	color: #FFFFFF;
+	text-align: center;
+}
+
+.bandeau.active + header {
+	margin-top: 100px;
+}
+
+.modifier {
+	border: none;
+	background: none;
+	font-family: 'Work Sans', sans-serif;
+	font-size: 14px;
+	cursor: pointer;
+}
+
+.modal-form {
+	display: flex;
+	flex-direction: column;
+	width: 420px;
+	margin: 35px auto 0;
+}
+
+.modal-form label {
+	margin: 30px 0 10px;
+	font-weight: 500;
+}
+
+.modal-form input[type="text"],
+.modal-form select {
+	height: 51px;
+	padding: 0 15px;
+	border: none;
+	background-color: #FFFFFF;
+	box-shadow: 0px 4px 14px rgba(0, 0, 0, 0.09);
+	font-family: 'Work Sans', sans-serif;
+	font-size: 14px;
+}
+
+.modal-form .error {
+	margin-top: 20px;
+	text-align: center;
+}
+
+.modal-form .modal-separator {
+	margin: 30px auto;
+}
+
+.modal-form .btn-primary {
+	width: 237px;
+	margin: 0 auto 35px;
+}
+
+.modal-form:invalid .btn-primary {
+	background-color: #A7A7A7;
+	cursor: not-allowed;
+}
+
+.upload-zone {
+	position: relative;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	height: 169px;
+	border-radius: 3px;
+	background-color: #E8F1F6;
+}
+
+.upload-placeholder {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: 8px;
+}
+
+.upload-placeholder.hidden {
+	display: none;
+}
+
+.upload-placeholder i {
+	font-size: 76px;
+	color: #B9C5CC;
+}
+
+.upload-placeholder label {
+	margin: 0;
+	padding: 10px 33px;
+	border-radius: 50px;
+	background-color: #CBD6DC;
+	color: #306685;
+	cursor: pointer;
+}
+
+.upload-placeholder input[type="file"] {
+	position: absolute;
+	width: 1px;
+	height: 1px;
+	opacity: 0;
+}
+
+.upload-placeholder p {
+	font-size: 10px;
+	color: #444444;
+}
+
+.upload-preview {
+	height: 100%;
+}
+
+#login {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+}
+
+#login h2 {
+	margin-bottom: 40px;
+}
+
+#login form {
+	display: flex;
+	flex-direction: column;
+	width: 379px;
+}
+
+#login label {
+	margin: 20px 0 10px;
+}
+
+#login input[type="email"],
+#login input[type="password"] {
+	height: 51px;
+	padding: 0 15px;
+	border: none;
+	background-color: #FFFFFF;
+	box-shadow: 0px 4px 14px rgba(0, 0, 0, 0.09);
+}
+
+#login input[type="submit"] {
+	height: 36px;
+	border: none;
+	cursor: pointer;
+}
+
+.forgot-password {
+	color: #3D3D3D;
 }

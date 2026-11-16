@@ -84,6 +84,12 @@ document.querySelector(".modal-close").addEventListener("click", () => {
     document.querySelector(".modal").classList.remove("active");
 });
 
+document.querySelector(".modal").addEventListener("click", (event) => {
+    if (event.target === event.currentTarget) {
+        document.querySelector(".modal").classList.remove("active");
+    }
+});
+
 document.querySelector(".modal-add-btn").addEventListener("click", () => {
     document.querySelector(".modal-view-gallery").classList.add("hidden");
     document.querySelector(".modal-view-add").classList.remove("hidden");
@@ -169,6 +175,19 @@ function displayCategoryOptions(categories) {
 function initialisationAddPhotoForm(works) {
     const form = document.querySelector(".modal-form");
     const error = form.querySelector(".error");
+    const fileInput = form.querySelector("#open-file");
+    const preview = form.querySelector(".upload-preview");
+    const placeholder = form.querySelector(".upload-placeholder");
+
+    fileInput.addEventListener("change", () => {
+        const file = fileInput.files[0];
+        if (!file) {
+            return;
+        }
+        preview.src = URL.createObjectURL(file);
+        preview.classList.remove("hidden");
+        placeholder.classList.add("hidden");
+    });
 
     form.addEventListener("submit", async (event) => {
         event.preventDefault();
@@ -186,6 +205,8 @@ function initialisationAddPhotoForm(works) {
         displayModalWorks(works);
 
         form.reset();
+        preview.classList.add("hidden");
+        placeholder.classList.remove("hidden");
         document.querySelector(".modal-view-gallery").classList.remove("hidden");
         document.querySelector(".modal-view-add").classList.add("hidden");
     });
