@@ -175,6 +175,7 @@ function displayCategoryOptions(categories) {
 function initialisationAddPhotoForm(works) {
     const form = document.querySelector(".modal-form");
     const error = form.querySelector(".error");
+    const sizeError = form.querySelector(".size-error");
     const fileInput = form.querySelector("#open-file");
     const preview = form.querySelector(".upload-preview");
     const placeholder = form.querySelector(".upload-placeholder");
@@ -192,8 +193,15 @@ function initialisationAddPhotoForm(works) {
     form.addEventListener("submit", async (event) => {
         event.preventDefault();
         error.classList.remove("active");
+        sizeError.classList.remove("active");
 
-        const newWork = await addWork(new FormData(form));
+        const formData = new FormData(form);
+        if (formData.get("image").size > 4 * 1024 * 1024) {
+            sizeError.classList.add("active");
+            return;
+        }
+
+        const newWork = await addWork(formData);
         if (!newWork) {
             error.classList.add("active");
             return;
